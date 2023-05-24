@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package grpcApi;
+
+
+message PostNewPostRequest {
+    int32 post_id = 1;
+    int32 channel_id = 2;
+    string channel_name = 3;
+    string text = 4;
+    string photo = 5;
+    string status = 6;
+    string date_sent = 7;
+}
+message PostNewPostResponse {
+    int32 status = 1;
+}
+
+
+message GetPostsByChannelRequest {
+    int32 channel_id = 1;
+}
+message GetPostsByChannelResponse {
+    repeated PostNewPostRequest posts = 1;
+}
+
+
+message AddSubscriberRequest {
+    string notification_id = 1;
+}
+message AddSubscriberResponse {
+    int32 status = 1;
+}
+
+
+message GetSubChannelsRequest {
+    int32 sub_id = 1;
+}
+message SubChannelsResponse {
+    int32 sub_id = 1;
+    int32 channel_id = 2;
+    string channel_name = 3;
+    string topic = 4;
+    int32 sub_count = 5;
+}
+message GetSubChannelsResponse {
+    repeated SubChannelsResponse channels = 1;
+}
+
+
+message ErrorInDelieveryRequest {
+    int32 post_id = 1;
+}
+message ErrorInDelieveryResponse {
+    int32 status = 1;
+}
+
+
+message PostNewSubRequest {
+    int32 sub_id = 1;
+    int32 channel_id = 2;
+}
+message PostNewSubResponse {
+    int32 status = 1;
+}
+
+
+service BrokerService {
+    rpc PostNewPost (PostNewPostRequest) returns (PostNewPostResponse);
+}
+
+service BackendService {
+    rpc GetPostsByChannel (GetPostsByChannelRequest) returns (GetPostsByChannelResponse);
+    rpc GetSubChannels (GetSubChannelsRequest) returns (GetSubChannelsResponse);
+    rpc ErrorInDelievery (ErrorInDelieveryRequest) returns (ErrorInDelieveryResponse);
+    rpc PostNewSub (PostNewSubRequest) returns (PostNewSubResponse);
+}
