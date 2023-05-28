@@ -1,39 +1,22 @@
-data =  {
-    1: {
-        "post_id": 1,
-        "channel_id": 1,
-        "channel": "1",
-        "text":"1",
-        "photo": "aboba",
-        "status":"sent",
-        "date_sent": "15.05",
-    },
-    2: {
-        "post_id": 2,
-        "channel_id":2,
-        "channel": "2",
-        "text":"2",
-        "photo": "notaboba",
-        "status":"sent",
-        "date_sent": "16.05",
-    },
-    3: {
-        "post_id": 3,
-        "channel_id": 3,
-        "channel": "3",
-        "text":"3",
-        "photo": "somephoto",
-        "status":"sent",
-        "date_sent": "16.06",
-    },
-}
+import grpc
+import grpc_API_pb2_grpc
+from concurrent import futures
+import grpc_API_pb2
 
-response = [ data[1]["post_id"],
-             data[1]["channel_id"],
-data[1]["channel"],
-data[1]["text"],
-data[1]["photo"],
-data[1]["status"],
-data[1]["date_sent"]]
+class BrokerService(grpc_API_pb2_grpc.BrokerServiceServicer):
+    def PostNewPost(self, request, context):
+        print(request)
+        return grpc_API_pb2.PostNewPostResponse(status = 0)
 
-print(response)
+
+def serve():
+    print("running server")
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    grpc_API_pb2_grpc.add_BrokerServiceServicer_to_server(BrokerService(), server)
+    server.add_insecure_port("[::]:50060")
+    server.start()
+    server.wait_for_termination()
+
+
+if __name__ == "__main__":
+    serve()

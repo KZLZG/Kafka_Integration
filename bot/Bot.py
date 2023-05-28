@@ -1,40 +1,13 @@
 import telebot;
 from telebot import types;
+import Producer
+#import Consumer
 
-bot = telebot.TeleBot('6041479103:AAE0IdzKKoIKASwtP0zXSDVE_bDz8V23NhE')
+blogs ={}
+data = {}
 
-data =  {
-    1: {
-        "post_id": 1,
-        "channel": "1",
-        "text":"1",
-        "photo": "aboba",
-        "status":"sent",
-        "date_sent": "15.05",
-    },
-    }
-blogs =  {
-    1: {
-        "sub_id": 1,
-        "channel_id" : 1,
-        "author": "Damn",
-        "topic": "Wild Planet",
-        "sub_count": 3,
-    },
-    2: {
-        "sub_id": 1,
-        "channel_id" : 2,
-        "author": "Abobus",
-        "topic": "Earth",
-        "sub_count": 5,
-    },
-}
-
-
-def test():
-    for key, blog  in blogs.items():
-        print(blog)
-
+TOKEN = '6041479103:AAE0IdzKKoIKASwtP0zXSDVE_bDz8V23NhE'
+bot = telebot.TeleBot(TOKEN)
 
 def show_posts(user_id, posts):
     for key, post  in posts.items():
@@ -85,4 +58,4 @@ def callback_worker(call):
 
 
 # Опрос API ТГ
-bot.polling(none_stop=True, interval=0)
+bot.polling(none_stop=True, interval=0.5)

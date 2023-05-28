@@ -1,1 +1,7 @@
 .venv
+__pycache__*
+brokerService/__pycache__
+.gitignore
+*Bot.py
+asyncBot*
+./bot

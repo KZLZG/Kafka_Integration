@@ -1,12 +1,13 @@
 from time import sleep
 from json import dumps
 from kafka import KafkaProducer
-''''''
-producer = KafkaProducer(
-    bootstrap_servers = ['localhost:9092'], 
-    value_serializer=lambda x: dumps(x).encode("utf-8"),
-)
-''''''
+import grpc
+
+from grpc_API_pb2_grpc import BrokerService, BrokerServiceServicer, add_BackendServiceServicer_to_server
+from concurrent import futures
+from grpc_API_pb2 import GetPostsByChannelResponse
+
+
 data =  {
     1: {
         "post_id": 1,
@@ -34,14 +35,52 @@ data =  {
     },
     }
 
-def poll():
-    print("start")
-    for key, item in data.items():
-            print("producer sends")
-            producer.send(
-                "BloggerPost",
-                value=item,
-            )
+
+
+
+def poll(message):
+    producer = KafkaProducer(
+        bootstrap_servers = ['localhost:9092'], 
+        value_serializer=lambda x: dumps(x).encode("utf-8"),
+        )
+    print("polling")
+
+        #for key, item in data.items():
+        #print("producer sends")
+    producer.send(
+                "test",
+                value=message,
+    )
+    print(message)    
     print("end")
 
-poll()
+
+
+class BrokerService(BrokerServiceServicer):
+    def PostNewPost(self, request, context):
+        status=0
+        try:
+            poll(request)
+            print("polled")
+        except Exception as e:
+            print('Cannot pull ', e)
+            status = 1
+        return GetPostsByChannelResponse(status = status)
+
+
+
+
+
+
+def serve():
+    print("running server")
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    add_BackendServiceServicer_to_server(BrokerService(), server)
+    server.add_insecure_port("[::]:50052")
+    server.start()
+    server.wait_for_termination()
+
+
+
+
+poll('test2')

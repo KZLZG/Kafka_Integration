@@ -1,7 +1,7 @@
 import grpc
 import grpc_API_pb2_grpc
 from concurrent import futures
-from grpc_API_pb2 import GetPostsByChannelResponse, PostNewPostRequest
+import grpc_API_pb2 
 
 data =  {
     1: {
@@ -33,22 +33,10 @@ data =  {
     },
 }
 
-response = GetPostsByChannelResponse()
-response.posts.add(
-                    post_id = data[1]["post_id"],
-                    channel_id = data[1]["channel_id"],
-                    channel_name = data[1]["channel"],
-                    text = data[1]["text"],
-                    photo = data[1]["photo"],
-                    status = data[1]["status"],
-                    date_sent = data[1]["date_sent"]
-        )
-#print(response)
-
 
 class BackendService(grpc_API_pb2_grpc.BackendServiceServicer):
     def GetPostsByChannel(self, request, context):
-        response = GetPostsByChannelResponse()
+        response = grpc_API_pb2.GetPostsByChannelResponse()
         response.posts.add(
                     post_id = data[1]["post_id"],
                     channel_id = data[1]["channel_id"],
@@ -58,7 +46,25 @@ class BackendService(grpc_API_pb2_grpc.BackendServiceServicer):
                     status = data[1]["status"],
                     date_sent = data[1]["date_sent"]
         )
-        return GetPostsByChannelResponse(posts = response.posts)
+        return grpc_API_pb2.GetPostsByChannelResponse(posts = response.posts)
+    
+    def GetSubChannels(self, request, context):
+        response = grpc_API_pb2.GetSubChannelsResponse()
+        for i in data:
+            response.channels.add(
+                    sub_id = data[request.sub_id]["post_id"],
+                    channel_id = data[request.sub_id]["channel_id"],
+                    channel_name = data[request.sub_id]["channel"],
+                    topic = data[request.sub_id]["text"],
+                    sub_count = data[request.sub_id]["post_id"])
+        return grpc_API_pb2.GetSubChannelsResponse(channels = response.channels)
+    
+    def ErrorInDelievery(self, request, context):
+        return grpc_API_pb2.ErrorInDelieveryResponse(status = request.post_id)
+    
+    def PostNewSub(self, request, context):
+        print(request.sub_id, request.channel_id)
+        return grpc_API_pb2.PostNewSubResponse(status = request.sub_id + request.channel_id)
 
     
 
