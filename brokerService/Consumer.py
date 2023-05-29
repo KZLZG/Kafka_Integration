@@ -34,7 +34,6 @@ def listen():
     for tp in consumer.partitions_for_topic('test'):
         partition = TopicPartition('test', tp)
         end_offsets[partition] = consumer.end_offsets([partition])[partition]
-
 # устанавливаем начальный offset на последний коммит
     for tp in consumer.assignment():
         if committed_offset is None:

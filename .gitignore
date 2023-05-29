@@ -2,6 +2,5 @@
 __pycache__*
 brokerService/__pycache__
 .gitignore
-*Bot.py
-asyncBot*
-./bot
+bot/Bot.py
+brokerService/asyncBot.py
