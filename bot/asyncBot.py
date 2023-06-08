@@ -4,7 +4,7 @@ import asyncio
 import brokerService.Consumer as Consumer
 from google.protobuf.json_format import MessageToDict
 from protobufs.grpc_API_pb2 import GetSubChannelsRequest, GetPostsByChannelRequest, ErrorInDelieveryRequest, PostNewSubRequest
-from brokerService.TgClient import TgClient
+from TgClient import TgClient
 import re
 
 
