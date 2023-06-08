@@ -1,31 +1,24 @@
 from kafka import KafkaConsumer
 from kafka.structs import TopicPartition
-import grpc
 from json import loads
-from grpc_API_pb2_grpc import BackendServiceStub
-from grpc_API_pb2 import ErrorInDelieveryRequest
-
+import time
 
 
 consumer = KafkaConsumer( 
+    'test',
     bootstrap_servers=['localhost:9092'],
     auto_offset_reset='earliest',
     enable_auto_commit=False,
+    max_poll_records = 1,
     group_id='my-group')
-
-'''bootstrap_servers = ['localhost : 9092'], 
-     #consumer_timeout_ms=1000,
-     auto_offset_reset = 'earliest', 
-     enable_auto_commit = True, 
-     group_id = 'my-group',
-     #max_poll_records=1,
-     value_deserializer = lambda x : loads(x.decode('utf-8')) '''
-      
-     
+ 
 
 def listen():
-    consumer.subscribe('test')
-    consumer.poll(0)
+    #print('start')
+    #start = time.time()
+    #end = time.time()
+    #print(end-start)
+    consumer.poll()
     for topic_partition in consumer.assignment():
         committed_offset = consumer.committed(topic_partition)
     
@@ -34,6 +27,7 @@ def listen():
     for tp in consumer.partitions_for_topic('test'):
         partition = TopicPartition('test', tp)
         end_offsets[partition] = consumer.end_offsets([partition])[partition]
+
 # устанавливаем начальный offset на последний коммит
     for tp in consumer.assignment():
         if committed_offset is None:
@@ -45,8 +39,33 @@ def listen():
     message = consumer.poll(timeout_ms= 1000)
     consumer.commit()
     # ваш код обработки сообщения здесь
-    print(message)
-    '''data = []
+    if message:
+        #print(json.loads(messages[tp][0]._asdict()['value'].decode()))
+        #print(dict(messages._asdict()))
+        return loads(message[tp][0]._asdict()['value'].decode())
+    else:
+        return None
+
+'''if __name__ == "__main__":
+    print(listen())
+'''
+
+
+
+''' for tp, records in messages.items():
+                print(type(records[0]))'''
+
+
+
+
+'''bootstrap_servers = ['localhost : 9092'], 
+     #consumer_timeout_ms=1000,
+     auto_offset_reset = 'earliest', 
+     enable_auto_commit = True, 
+     group_id = 'my-group',
+     #max_poll_records=1,
+     value_deserializer = lambda x : loads(x.decode('utf-8')) '''
+'''data = []
     tp = TopicPartition('test', 0)
     consumer.assign([tp])
     consumer.seek_to_end(tp)
@@ -54,7 +73,7 @@ def listen():
     #messages = consumer.poll(timeout_ms=3000)
     #print(messages)
     
-    '''
+'''
     for message in messages.values():
         # обрабатываем новые сообщения
             print(message.value.decode())
@@ -83,8 +102,7 @@ def listen():
     
     
     
-    '''if not messages:  # если новых сообщений нет, то выходим из цикла
-        break'''
+'''if not messages:  # если новых сообщений нет, то выходим из цикла
+        break
     
-    #consumer.close()
-listen()
+#consumer.close()'''

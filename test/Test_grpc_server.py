@@ -1,7 +1,7 @@
 import grpc
-import grpc_API_pb2_grpc
+import protobufs.grpc_API_pb2_grpc as grpc_API_pb2_grpc
 from concurrent import futures
-import grpc_API_pb2 
+import protobufs.grpc_API_pb2 as grpc_API_pb2
 
 data =  {
     1: {

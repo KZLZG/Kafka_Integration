@@ -4,3 +4,4 @@ brokerService/__pycache__
 .gitignore
 bot/Bot.py
 brokerService/asyncBot.py
+posts.sql
